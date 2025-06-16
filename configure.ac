@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-# Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
+# Copyright 2020-2025 Fabian Groffen <grobian@bitzolder.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@ AC_INIT([html2text], [2.3.0.9999_pre], [BUG-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([enable])
 AM_ICONV
+LIBCURL_CHECK_CONFIG
 #AC_CONFIG_SRCDIR([html.h])
-#AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_YACC

@@ -2,6 +2,9 @@
 
 ### New Features
 
+* [Issue #18](https://gitlab.com/grobian/html2text/-/issues/18)
+  Allow retrieving remote URLs directly.
+
 ### Bugfixes
 
 

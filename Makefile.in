@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
+# Copyright 2020-2025 Fabian Groffen <grobian@bitzolder.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -106,7 +106,7 @@ bin_PROGRAMS = html2text$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libcurl.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
@@ -114,19 +114,22 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
+CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" \
 	"$(DESTDIR)$(man5dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_html2text_OBJECTS = Area.$(OBJEXT) cmp_nocase.$(OBJEXT) \
-	format.$(OBJEXT) html2text.$(OBJEXT) HTMLControl.$(OBJEXT) \
-	html.$(OBJEXT) HTMLDriver.$(OBJEXT) HTMLParser.$(OBJEXT) \
-	iconvstream.$(OBJEXT) Properties.$(OBJEXT) sgml.$(OBJEXT) \
-	table.$(OBJEXT)
+am_html2text_OBJECTS = html2text-Area.$(OBJEXT) \
+	html2text-cmp_nocase.$(OBJEXT) html2text-format.$(OBJEXT) \
+	html2text-html2text.$(OBJEXT) html2text-HTMLControl.$(OBJEXT) \
+	html2text-html.$(OBJEXT) html2text-HTMLDriver.$(OBJEXT) \
+	html2text-HTMLParser.$(OBJEXT) html2text-iconvstream.$(OBJEXT) \
+	html2text-Properties.$(OBJEXT) html2text-sgml.$(OBJEXT) \
+	html2text-table.$(OBJEXT)
 html2text_OBJECTS = $(am_html2text_OBJECTS)
 am__DEPENDENCIES_1 =
-html2text_DEPENDENCIES = $(am__DEPENDENCIES_1)
+html2text_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -142,13 +145,21 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/Area.Po ./$(DEPDIR)/HTMLControl.Po \
-	./$(DEPDIR)/HTMLDriver.Po ./$(DEPDIR)/HTMLParser.Po \
-	./$(DEPDIR)/Properties.Po ./$(DEPDIR)/cmp_nocase.Po \
-	./$(DEPDIR)/format.Po ./$(DEPDIR)/html.Po \
-	./$(DEPDIR)/html2text.Po ./$(DEPDIR)/iconvstream.Po \
-	./$(DEPDIR)/sgml.Po ./$(DEPDIR)/table.Po
+am__depfiles_remade = ./$(DEPDIR)/html2text-Area.Po \
+	./$(DEPDIR)/html2text-HTMLControl.Po \
+	./$(DEPDIR)/html2text-HTMLDriver.Po \
+	./$(DEPDIR)/html2text-HTMLParser.Po \
+	./$(DEPDIR)/html2text-Properties.Po \
+	./$(DEPDIR)/html2text-cmp_nocase.Po \
+	./$(DEPDIR)/html2text-format.Po ./$(DEPDIR)/html2text-html.Po \
+	./$(DEPDIR)/html2text-html2text.Po \
+	./$(DEPDIR)/html2text-iconvstream.Po \
+	./$(DEPDIR)/html2text-sgml.Po ./$(DEPDIR)/html2text-table.Po
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_@AM_V@)
@@ -220,7 +231,8 @@ man1dir = $(mandir)/man1
 man5dir = $(mandir)/man5
 NROFF = nroff
 MANS = $(man1_MANS) $(man5_MANS)
-am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
+am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP) \
+	config.h.in
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
 # *not* preserved.
@@ -238,10 +250,10 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 AM_RECURSIVE_TARGETS = cscope
-am__DIST_COMMON = $(srcdir)/Makefile.in COPYING ChangeLog.md \
-	HTMLParser.cc HTMLParser.hh INSTALL README.md compile \
-	config.guess config.rpath config.sub depcomp install-sh \
-	missing ylwrap
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in COPYING \
+	ChangeLog.md HTMLParser.cc HTMLParser.hh INSTALL README.md \
+	compile config.guess config.rpath config.sub depcomp \
+	install-sh missing ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -295,6 +307,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LIBCURL = @LIBCURL@
+LIBCURL_CPPFLAGS = @LIBCURL_CPPFLAGS@
 LIBICONV = @LIBICONV@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -319,6 +333,7 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 YFLAGS = @YFLAGS@
+_libcurl_config = @_libcurl_config@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -403,7 +418,9 @@ html2text_SOURCES = \
 					table.cpp \
 					$(NULL)
 
+html2text_CPPFLAGS = $(LIBCURL_CPPFLAGS)
 html2text_LDADD = \
+				  $(LIBCURL) \
 				  $(LIBICONV) \
 				  $(NULL)
 
@@ -421,7 +438,7 @@ EXTRA_DIST = \
 			 README.md \
 			 $(NULL)
 
-all: $(BUILT_SOURCES)
+all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -459,6 +476,21 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
+
+config.h: stamp-h1
+	@test -f $@ || rm -f stamp-h1
+	@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) stamp-h1
+
+stamp-h1: $(srcdir)/config.h.in $(top_builddir)/config.status
+	$(AM_V_at)rm -f stamp-h1
+	$(AM_V_GEN)cd $(top_builddir) && $(SHELL) ./config.status config.h
+$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps) 
+	$(AM_V_GEN)($(am__cd) $(top_srcdir) && $(AUTOHEADER))
+	$(AM_V_at)rm -f stamp-h1
+	$(AM_V_at)touch $@
+
+distclean-hdr:
+	-rm -f config.h stamp-h1
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -515,18 +547,18 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Area.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HTMLControl.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HTMLDriver.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HTMLParser.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Properties.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmp_nocase.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/format.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iconvstream.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sgml.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/table.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-Area.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-HTMLControl.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-HTMLDriver.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-HTMLParser.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-Properties.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-cmp_nocase.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-format.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-html.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-html2text.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-iconvstream.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-sgml.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html2text-table.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -547,6 +579,174 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+html2text-Area.o: Area.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-Area.o -MD -MP -MF $(DEPDIR)/html2text-Area.Tpo -c -o html2text-Area.o `test -f 'Area.cpp' || echo '$(srcdir)/'`Area.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-Area.Tpo $(DEPDIR)/html2text-Area.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Area.cpp' object='html2text-Area.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-Area.o `test -f 'Area.cpp' || echo '$(srcdir)/'`Area.cpp
+
+html2text-Area.obj: Area.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-Area.obj -MD -MP -MF $(DEPDIR)/html2text-Area.Tpo -c -o html2text-Area.obj `if test -f 'Area.cpp'; then $(CYGPATH_W) 'Area.cpp'; else $(CYGPATH_W) '$(srcdir)/Area.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-Area.Tpo $(DEPDIR)/html2text-Area.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Area.cpp' object='html2text-Area.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-Area.obj `if test -f 'Area.cpp'; then $(CYGPATH_W) 'Area.cpp'; else $(CYGPATH_W) '$(srcdir)/Area.cpp'; fi`
+
+html2text-cmp_nocase.o: cmp_nocase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-cmp_nocase.o -MD -MP -MF $(DEPDIR)/html2text-cmp_nocase.Tpo -c -o html2text-cmp_nocase.o `test -f 'cmp_nocase.cpp' || echo '$(srcdir)/'`cmp_nocase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-cmp_nocase.Tpo $(DEPDIR)/html2text-cmp_nocase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cmp_nocase.cpp' object='html2text-cmp_nocase.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-cmp_nocase.o `test -f 'cmp_nocase.cpp' || echo '$(srcdir)/'`cmp_nocase.cpp
+
+html2text-cmp_nocase.obj: cmp_nocase.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-cmp_nocase.obj -MD -MP -MF $(DEPDIR)/html2text-cmp_nocase.Tpo -c -o html2text-cmp_nocase.obj `if test -f 'cmp_nocase.cpp'; then $(CYGPATH_W) 'cmp_nocase.cpp'; else $(CYGPATH_W) '$(srcdir)/cmp_nocase.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-cmp_nocase.Tpo $(DEPDIR)/html2text-cmp_nocase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cmp_nocase.cpp' object='html2text-cmp_nocase.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-cmp_nocase.obj `if test -f 'cmp_nocase.cpp'; then $(CYGPATH_W) 'cmp_nocase.cpp'; else $(CYGPATH_W) '$(srcdir)/cmp_nocase.cpp'; fi`
+
+html2text-format.o: format.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-format.o -MD -MP -MF $(DEPDIR)/html2text-format.Tpo -c -o html2text-format.o `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-format.Tpo $(DEPDIR)/html2text-format.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='format.cpp' object='html2text-format.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-format.o `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+
+html2text-format.obj: format.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-format.obj -MD -MP -MF $(DEPDIR)/html2text-format.Tpo -c -o html2text-format.obj `if test -f 'format.cpp'; then $(CYGPATH_W) 'format.cpp'; else $(CYGPATH_W) '$(srcdir)/format.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-format.Tpo $(DEPDIR)/html2text-format.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='format.cpp' object='html2text-format.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-format.obj `if test -f 'format.cpp'; then $(CYGPATH_W) 'format.cpp'; else $(CYGPATH_W) '$(srcdir)/format.cpp'; fi`
+
+html2text-html2text.o: html2text.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-html2text.o -MD -MP -MF $(DEPDIR)/html2text-html2text.Tpo -c -o html2text-html2text.o `test -f 'html2text.cpp' || echo '$(srcdir)/'`html2text.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-html2text.Tpo $(DEPDIR)/html2text-html2text.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='html2text.cpp' object='html2text-html2text.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-html2text.o `test -f 'html2text.cpp' || echo '$(srcdir)/'`html2text.cpp
+
+html2text-html2text.obj: html2text.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-html2text.obj -MD -MP -MF $(DEPDIR)/html2text-html2text.Tpo -c -o html2text-html2text.obj `if test -f 'html2text.cpp'; then $(CYGPATH_W) 'html2text.cpp'; else $(CYGPATH_W) '$(srcdir)/html2text.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-html2text.Tpo $(DEPDIR)/html2text-html2text.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='html2text.cpp' object='html2text-html2text.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-html2text.obj `if test -f 'html2text.cpp'; then $(CYGPATH_W) 'html2text.cpp'; else $(CYGPATH_W) '$(srcdir)/html2text.cpp'; fi`
+
+html2text-HTMLControl.o: HTMLControl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLControl.o -MD -MP -MF $(DEPDIR)/html2text-HTMLControl.Tpo -c -o html2text-HTMLControl.o `test -f 'HTMLControl.cpp' || echo '$(srcdir)/'`HTMLControl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLControl.Tpo $(DEPDIR)/html2text-HTMLControl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLControl.cpp' object='html2text-HTMLControl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLControl.o `test -f 'HTMLControl.cpp' || echo '$(srcdir)/'`HTMLControl.cpp
+
+html2text-HTMLControl.obj: HTMLControl.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLControl.obj -MD -MP -MF $(DEPDIR)/html2text-HTMLControl.Tpo -c -o html2text-HTMLControl.obj `if test -f 'HTMLControl.cpp'; then $(CYGPATH_W) 'HTMLControl.cpp'; else $(CYGPATH_W) '$(srcdir)/HTMLControl.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLControl.Tpo $(DEPDIR)/html2text-HTMLControl.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLControl.cpp' object='html2text-HTMLControl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLControl.obj `if test -f 'HTMLControl.cpp'; then $(CYGPATH_W) 'HTMLControl.cpp'; else $(CYGPATH_W) '$(srcdir)/HTMLControl.cpp'; fi`
+
+html2text-html.o: html.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-html.o -MD -MP -MF $(DEPDIR)/html2text-html.Tpo -c -o html2text-html.o `test -f 'html.cpp' || echo '$(srcdir)/'`html.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-html.Tpo $(DEPDIR)/html2text-html.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='html.cpp' object='html2text-html.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-html.o `test -f 'html.cpp' || echo '$(srcdir)/'`html.cpp
+
+html2text-html.obj: html.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-html.obj -MD -MP -MF $(DEPDIR)/html2text-html.Tpo -c -o html2text-html.obj `if test -f 'html.cpp'; then $(CYGPATH_W) 'html.cpp'; else $(CYGPATH_W) '$(srcdir)/html.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-html.Tpo $(DEPDIR)/html2text-html.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='html.cpp' object='html2text-html.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-html.obj `if test -f 'html.cpp'; then $(CYGPATH_W) 'html.cpp'; else $(CYGPATH_W) '$(srcdir)/html.cpp'; fi`
+
+html2text-HTMLDriver.o: HTMLDriver.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLDriver.o -MD -MP -MF $(DEPDIR)/html2text-HTMLDriver.Tpo -c -o html2text-HTMLDriver.o `test -f 'HTMLDriver.cpp' || echo '$(srcdir)/'`HTMLDriver.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLDriver.Tpo $(DEPDIR)/html2text-HTMLDriver.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLDriver.cpp' object='html2text-HTMLDriver.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLDriver.o `test -f 'HTMLDriver.cpp' || echo '$(srcdir)/'`HTMLDriver.cpp
+
+html2text-HTMLDriver.obj: HTMLDriver.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLDriver.obj -MD -MP -MF $(DEPDIR)/html2text-HTMLDriver.Tpo -c -o html2text-HTMLDriver.obj `if test -f 'HTMLDriver.cpp'; then $(CYGPATH_W) 'HTMLDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/HTMLDriver.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLDriver.Tpo $(DEPDIR)/html2text-HTMLDriver.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLDriver.cpp' object='html2text-HTMLDriver.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLDriver.obj `if test -f 'HTMLDriver.cpp'; then $(CYGPATH_W) 'HTMLDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/HTMLDriver.cpp'; fi`
+
+html2text-HTMLParser.o: HTMLParser.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLParser.o -MD -MP -MF $(DEPDIR)/html2text-HTMLParser.Tpo -c -o html2text-HTMLParser.o `test -f 'HTMLParser.cc' || echo '$(srcdir)/'`HTMLParser.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLParser.Tpo $(DEPDIR)/html2text-HTMLParser.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLParser.cc' object='html2text-HTMLParser.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLParser.o `test -f 'HTMLParser.cc' || echo '$(srcdir)/'`HTMLParser.cc
+
+html2text-HTMLParser.obj: HTMLParser.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-HTMLParser.obj -MD -MP -MF $(DEPDIR)/html2text-HTMLParser.Tpo -c -o html2text-HTMLParser.obj `if test -f 'HTMLParser.cc'; then $(CYGPATH_W) 'HTMLParser.cc'; else $(CYGPATH_W) '$(srcdir)/HTMLParser.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-HTMLParser.Tpo $(DEPDIR)/html2text-HTMLParser.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='HTMLParser.cc' object='html2text-HTMLParser.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-HTMLParser.obj `if test -f 'HTMLParser.cc'; then $(CYGPATH_W) 'HTMLParser.cc'; else $(CYGPATH_W) '$(srcdir)/HTMLParser.cc'; fi`
+
+html2text-iconvstream.o: iconvstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-iconvstream.o -MD -MP -MF $(DEPDIR)/html2text-iconvstream.Tpo -c -o html2text-iconvstream.o `test -f 'iconvstream.cpp' || echo '$(srcdir)/'`iconvstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-iconvstream.Tpo $(DEPDIR)/html2text-iconvstream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iconvstream.cpp' object='html2text-iconvstream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-iconvstream.o `test -f 'iconvstream.cpp' || echo '$(srcdir)/'`iconvstream.cpp
+
+html2text-iconvstream.obj: iconvstream.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-iconvstream.obj -MD -MP -MF $(DEPDIR)/html2text-iconvstream.Tpo -c -o html2text-iconvstream.obj `if test -f 'iconvstream.cpp'; then $(CYGPATH_W) 'iconvstream.cpp'; else $(CYGPATH_W) '$(srcdir)/iconvstream.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-iconvstream.Tpo $(DEPDIR)/html2text-iconvstream.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iconvstream.cpp' object='html2text-iconvstream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-iconvstream.obj `if test -f 'iconvstream.cpp'; then $(CYGPATH_W) 'iconvstream.cpp'; else $(CYGPATH_W) '$(srcdir)/iconvstream.cpp'; fi`
+
+html2text-Properties.o: Properties.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-Properties.o -MD -MP -MF $(DEPDIR)/html2text-Properties.Tpo -c -o html2text-Properties.o `test -f 'Properties.cpp' || echo '$(srcdir)/'`Properties.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-Properties.Tpo $(DEPDIR)/html2text-Properties.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Properties.cpp' object='html2text-Properties.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-Properties.o `test -f 'Properties.cpp' || echo '$(srcdir)/'`Properties.cpp
+
+html2text-Properties.obj: Properties.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-Properties.obj -MD -MP -MF $(DEPDIR)/html2text-Properties.Tpo -c -o html2text-Properties.obj `if test -f 'Properties.cpp'; then $(CYGPATH_W) 'Properties.cpp'; else $(CYGPATH_W) '$(srcdir)/Properties.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-Properties.Tpo $(DEPDIR)/html2text-Properties.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Properties.cpp' object='html2text-Properties.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-Properties.obj `if test -f 'Properties.cpp'; then $(CYGPATH_W) 'Properties.cpp'; else $(CYGPATH_W) '$(srcdir)/Properties.cpp'; fi`
+
+html2text-sgml.o: sgml.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-sgml.o -MD -MP -MF $(DEPDIR)/html2text-sgml.Tpo -c -o html2text-sgml.o `test -f 'sgml.cpp' || echo '$(srcdir)/'`sgml.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-sgml.Tpo $(DEPDIR)/html2text-sgml.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sgml.cpp' object='html2text-sgml.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-sgml.o `test -f 'sgml.cpp' || echo '$(srcdir)/'`sgml.cpp
+
+html2text-sgml.obj: sgml.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-sgml.obj -MD -MP -MF $(DEPDIR)/html2text-sgml.Tpo -c -o html2text-sgml.obj `if test -f 'sgml.cpp'; then $(CYGPATH_W) 'sgml.cpp'; else $(CYGPATH_W) '$(srcdir)/sgml.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-sgml.Tpo $(DEPDIR)/html2text-sgml.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sgml.cpp' object='html2text-sgml.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-sgml.obj `if test -f 'sgml.cpp'; then $(CYGPATH_W) 'sgml.cpp'; else $(CYGPATH_W) '$(srcdir)/sgml.cpp'; fi`
+
+html2text-table.o: table.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-table.o -MD -MP -MF $(DEPDIR)/html2text-table.Tpo -c -o html2text-table.o `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-table.Tpo $(DEPDIR)/html2text-table.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='table.cpp' object='html2text-table.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-table.o `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+
+html2text-table.obj: table.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html2text-table.obj -MD -MP -MF $(DEPDIR)/html2text-table.Tpo -c -o html2text-table.obj `if test -f 'table.cpp'; then $(CYGPATH_W) 'table.cpp'; else $(CYGPATH_W) '$(srcdir)/table.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/html2text-table.Tpo $(DEPDIR)/html2text-table.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='table.cpp' object='html2text-table.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(html2text_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html2text-table.obj `if test -f 'table.cpp'; then $(CYGPATH_W) 'table.cpp'; else $(CYGPATH_W) '$(srcdir)/table.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -881,7 +1081,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(PROGRAMS) $(MANS)
+all-am: Makefile $(PROGRAMS) $(MANS) config.h
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -927,21 +1127,21 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -f ./$(DEPDIR)/Area.Po
-	-rm -f ./$(DEPDIR)/HTMLControl.Po
-	-rm -f ./$(DEPDIR)/HTMLDriver.Po
-	-rm -f ./$(DEPDIR)/HTMLParser.Po
-	-rm -f ./$(DEPDIR)/Properties.Po
-	-rm -f ./$(DEPDIR)/cmp_nocase.Po
-	-rm -f ./$(DEPDIR)/format.Po
-	-rm -f ./$(DEPDIR)/html.Po
-	-rm -f ./$(DEPDIR)/html2text.Po
-	-rm -f ./$(DEPDIR)/iconvstream.Po
-	-rm -f ./$(DEPDIR)/sgml.Po
-	-rm -f ./$(DEPDIR)/table.Po
+	-rm -f ./$(DEPDIR)/html2text-Area.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLControl.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLDriver.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLParser.Po
+	-rm -f ./$(DEPDIR)/html2text-Properties.Po
+	-rm -f ./$(DEPDIR)/html2text-cmp_nocase.Po
+	-rm -f ./$(DEPDIR)/html2text-format.Po
+	-rm -f ./$(DEPDIR)/html2text-html.Po
+	-rm -f ./$(DEPDIR)/html2text-html2text.Po
+	-rm -f ./$(DEPDIR)/html2text-iconvstream.Po
+	-rm -f ./$(DEPDIR)/html2text-sgml.Po
+	-rm -f ./$(DEPDIR)/html2text-table.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-tags
+	distclean-hdr distclean-tags
 
 dvi: dvi-am
 
@@ -986,18 +1186,18 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -f ./$(DEPDIR)/Area.Po
-	-rm -f ./$(DEPDIR)/HTMLControl.Po
-	-rm -f ./$(DEPDIR)/HTMLDriver.Po
-	-rm -f ./$(DEPDIR)/HTMLParser.Po
-	-rm -f ./$(DEPDIR)/Properties.Po
-	-rm -f ./$(DEPDIR)/cmp_nocase.Po
-	-rm -f ./$(DEPDIR)/format.Po
-	-rm -f ./$(DEPDIR)/html.Po
-	-rm -f ./$(DEPDIR)/html2text.Po
-	-rm -f ./$(DEPDIR)/iconvstream.Po
-	-rm -f ./$(DEPDIR)/sgml.Po
-	-rm -f ./$(DEPDIR)/table.Po
+	-rm -f ./$(DEPDIR)/html2text-Area.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLControl.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLDriver.Po
+	-rm -f ./$(DEPDIR)/html2text-HTMLParser.Po
+	-rm -f ./$(DEPDIR)/html2text-Properties.Po
+	-rm -f ./$(DEPDIR)/html2text-cmp_nocase.Po
+	-rm -f ./$(DEPDIR)/html2text-format.Po
+	-rm -f ./$(DEPDIR)/html2text-html.Po
+	-rm -f ./$(DEPDIR)/html2text-html2text.Po
+	-rm -f ./$(DEPDIR)/html2text-iconvstream.Po
+	-rm -f ./$(DEPDIR)/html2text-sgml.Po
+	-rm -f ./$(DEPDIR)/html2text-table.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1025,19 +1225,19 @@ uninstall-man: uninstall-man1 uninstall-man5
 	clean-generic cscope cscopelist-am ctags ctags-am dist \
 	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
 	dist-xz dist-zip dist-zstd distcheck distclean \
-	distclean-compile distclean-generic distclean-tags \
-	distcleancheck distdir distuninstallcheck dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-man1 \
-	install-man5 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
-	ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-man uninstall-man1 \
-	uninstall-man5
+	distclean-compile distclean-generic distclean-hdr \
+	distclean-tags distcleancheck distdir distuninstallcheck dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-man1 install-man5 install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-man \
+	uninstall-man1 uninstall-man5
 
 .PRECIOUS: Makefile
 

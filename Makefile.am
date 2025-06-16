@@ -1,4 +1,4 @@
-# Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
+# Copyright 2020-2025 Fabian Groffen <grobian@bitzolder.nl>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,7 +42,9 @@ html2text_SOURCES = \
 					sgml.h \
 					table.cpp \
 					$(NULL)
+html2text_CPPFLAGS = $(LIBCURL_CPPFLAGS)
 html2text_LDADD = \
+				  $(LIBCURL) \
 				  $(LIBICONV) \
 				  $(NULL)
 

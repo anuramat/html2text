@@ -4305,3 +4305,4 @@ AC_SUBST(am__xargs_n)
 ])
 
 m4_include([m4/iconv.m4])
+m4_include([m4/libcurl.m4])

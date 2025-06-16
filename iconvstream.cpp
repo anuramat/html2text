@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2025 Fabian Groffen <grobian@gentoo.org>
+ * Copyright 2020-2025 Fabian Groffen <grobian@bitzolder.nl>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License in the file COPYING for more details.
  */
+
+#include "config.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,17 +29,72 @@
 #include <iostream>
 #include "iconvstream.h"
 
+#ifdef HAVE_LIBCURL
+# include <curl/curl.h>
+
+static size_t wr2file(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+	return written;
+}
+#endif
+
 void
 iconvstream::open_is(const char *file_name, const char *encoding_in)
 {
+	bool isstdin = false;
+
 	close_is();
 
 	encoding = encoding_in;
+	isstdin  = strcmp(file_name, "-") == 0;
 
-	fd_is =
-		strcmp(file_name, "-") == 0 ? ::dup(0) : ::open(file_name, O_RDONLY);
-	if (fd_is == -1)
-		open_err = strerror(errno);
+	if (!isstdin &&
+		strstr(file_name, "://") != NULL)
+	{
+#ifdef HAVE_LIBCURL
+		/* looks like an URI, throw this through curl */
+		CURL       *ch;
+		FILE       *fp;
+		const char *tmpdir    = NULL;
+		char        fname[64];
+
+		tmpdir = getenv("TMPDIR");
+		if (tmpdir == NULL)
+			tmpdir = "/tmp";
+
+		snprintf(fname, sizeof(fname), "%s/XXXXXXXXXXXX", tmpdir);
+		fd_is = mkstemp(fname);
+		unlink(fname);  /* make it invisible */
+
+		ch = curl_easy_init();
+		if (ch == NULL) {
+			open_err = "failed to initialise cURL";
+			return;
+		}
+
+		fp = fdopen(dup(fd_is), "wb+");
+
+		curl_easy_setopt(ch, CURLOPT_URL, file_name);
+		curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1L);
+		curl_easy_setopt(ch, CURLOPT_WRITEFUNCTION, wr2file);
+		curl_easy_setopt(ch, CURLOPT_WRITEDATA, fp);
+		curl_easy_perform(ch);
+		curl_easy_cleanup(ch);
+		fclose(fp);
+
+		/* rewind for reading */
+		lseek(fd_is, 0, SEEK_SET);
+#else
+		open_err = "cURL support not compiled in";
+#endif
+	}
+	else
+	{
+		fd_is = isstdin ? ::dup(0) : ::open(file_name, O_RDONLY);
+		if (fd_is == -1)
+			open_err = strerror(errno);
+	}
 
 	readbufsze = 1024;  /* matches w3c's req for content type declaration */
 	rutf8bufsze = readbufsze * 4;
