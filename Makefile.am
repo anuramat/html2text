@@ -12,6 +12,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+SUBDIRS =
+
 AM_YFLAGS = -d -Wno-yacc
 
 bin_PROGRAMS = html2text
