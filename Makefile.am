@@ -11,7 +11,6 @@
 # GNU General Public License in the file COPYING for more details.
 
 AUTOMAKE_OPTIONS = foreign
-ACLOCAL_AMFLAGS = -I m4
 
 AM_YFLAGS = -d -Wno-yacc
 

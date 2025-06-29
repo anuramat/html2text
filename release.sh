@@ -67,6 +67,13 @@ EUTODAY=$(date +%d-%m-%Y)
 # version we store after the release
 RECVERSION=${NEWVERSION}.9999_pre
 
+# update m4 macros and the whole machinery
+rm m4/*.m4
+aclocal --install
+git add m4/
+autoreconf -f -i
+git commit -a --signoff -m "build-sys: refresh for release ${NEWVERSION}" || die
+
 # create official version
 # AC_INIT([html2text], [2.1.1.9999_pre], [BUG-REPORT-ADDRESS])
 sed -i.release \
@@ -98,6 +105,7 @@ case "${ans}" in
 		;;
 esac
 rm -f configure.ac.release ChangeLog.md.release
+autoreconf -f -i
 git commit -a --signoff -m "release ${NEWVERSION}" || die
 git tag v${NEWVERSION}
 
@@ -112,7 +120,6 @@ pushd "${CHANGES}"/build || die
 git clone "${SRCDIR}" html2text
 pushd html2text
 git checkout "v${NEWVERSION}" || die
-autoreconf -f -i
 ./configure
 make dist
 mv html2text-${NEWVERSION}.tar.* "${SRCDIR}"/ || die
