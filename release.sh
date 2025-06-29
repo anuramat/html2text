@@ -69,9 +69,11 @@ RECVERSION=${NEWVERSION}.9999_pre
 
 # update m4 macros and the whole machinery
 rm m4/*.m4
-aclocal --install
-git add m4/
 env WANT_AUTOMAKE=latest autoreconf -f -i
+aclocal --install
+rm m4/*.m4~
+git add m4/
+autoreconf -f
 git commit -a --signoff -m "build-sys: refresh for release ${NEWVERSION}" || die
 
 # create official version
@@ -105,7 +107,7 @@ case "${ans}" in
 		;;
 esac
 rm -f configure.ac.release ChangeLog.md.release
-autoreconf -f -i
+autoreconf -f
 git commit -a --signoff -m "release ${NEWVERSION}" || die
 git tag v${NEWVERSION}
 
@@ -131,5 +133,5 @@ sed -i \
 	-e '/^AC_INIT/s/\['"${NEWVERSION}"'\]/['"${RECVERSION}"']/' \
 	-e "/^AM_MAINTAINER_MODE/s:\[disable\]:[enable]:" \
 	configure.ac || die
-autoreconf -f -i
+autoreconf -f
 git commit -a --signoff -m "post release update" || die

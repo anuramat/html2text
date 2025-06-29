@@ -18,6 +18,7 @@ AC_INIT([html2text], [2.3.0.9999_pre], [BUG-REPORT-ADDRESS])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([enable])
+# necessary for running autopoint to get iconv.m4 using >=gettext-0.25
 AM_GNU_GETTEXT_VERSION([0.20])
 AM_GNU_GETTEXT([external])
 AM_ICONV
