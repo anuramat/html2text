@@ -71,7 +71,7 @@ RECVERSION=${NEWVERSION}.9999_pre
 rm m4/*.m4
 aclocal --install
 git add m4/
-autoreconf -f -i
+env WANT_AUTOMAKE=latest autoreconf -f -i
 git commit -a --signoff -m "build-sys: refresh for release ${NEWVERSION}" || die
 
 # create official version
