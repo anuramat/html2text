@@ -31,6 +31,7 @@ TESTS= \
 	   auto=html4meta \
 	   auto=html5meta \
 	   auto=html4entities \
+	   auto=table-misrendering \
 	   $(NULL)
 check:
 	@./runtest.sh $(TESTS)

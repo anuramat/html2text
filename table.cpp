@@ -17,7 +17,7 @@
  */
 
 /*
- * "Table::format()" has been taken out of "format.C" because it is way more
+ * "Table::format()" has been taken out of "format.cpp" because it is way more
  * complex than the "format()" methods of the other HTML elements.
  */
 
@@ -359,7 +359,6 @@ narrow_table(
 				.append(" h=").append(std::to_string(lc->h))
 				.append(" width=").append(std::to_string(lc->width))
 				.append(" minwidth=").append(std::to_string(lc->minwidth))
-				.append(" minimised=").append(std::to_string(lc->minimized))
 				.append("\n");
 	}
 	/* colspan phase two, for every level up in colspan, process them,
@@ -432,10 +431,14 @@ narrow_table(
 		totcolneedsize += colneedsizes[i];
 		totcolcursize  += colcursizes[i];
 		if (debug)
-			dbgstr.append("  column ").append(std::to_string(i)).append(": ")
-				.append(std::to_string(column_widths_in_out[i])).append("-")
-				.append(std::to_string(colneedsizes[i])).append("-")
-				.append(std::to_string(colcursizes[i])).append("\n");
+			dbgstr.append("  column ").append(std::to_string(i))
+				.append(": width=")
+				.append(std::to_string(column_widths_in_out[i]))
+				.append(" needsize=")
+				.append(std::to_string(colneedsizes[i]))
+				.append(" cursize=")
+				.append(std::to_string(colcursizes[i]))
+				.append("\n");
 	}
 	waste = *table_width_in_out - totcolwidth;
 
@@ -446,11 +449,13 @@ narrow_table(
 		wantedspace = wanted_size - waste;
 
 	if (debug)
-		dbgstr.append("  totcolwidth=").append(std::to_string(totcolwidth))
+		dbgstr.append("* totcolwidth=").append(std::to_string(totcolwidth))
 			.append(" totcolneedsize=").append(std::to_string(totcolneedsize))
 			.append(" totcolcursize=").append(std::to_string(totcolcursize))
-			.append(" wantedspace=").append(std::to_string(wantedspace))
-			.append(" waste=").append(std::to_string(waste))
+			.append(" wanted_size=").append(std::to_string(wanted_size))
+			.append(" border_waste=").append(std::to_string(waste))
+			.append(" wanted_space=").append(std::to_string(wantedspace))
+			.append(" newtablesize=").append(std::to_string(newtablesize))
 			.append("\n");
 
 	/* we have three sizes:
@@ -482,29 +487,42 @@ narrow_table(
 		}
 		if (debug)
 			dbgstr.append("  => strategy scale, whitespace=")
-				.append(std::to_string(whitespace)).append("\n");
+				.append(std::to_string(whitespace))
+				.append("\n");
 		if (whitespace > 0) {
 			Area::size_type redux = newtablesize - waste - wantedspace;
 			if (redux < whitespace) {
 				double scale = ((double)redux / (double)whitespace);
+				if (debug)
+					dbgstr.append("     scaling whitespace")
+						.append(" reduce=")
+						.append(std::to_string(newtablesize -
+											   waste -
+											   wantedspace))
+						.append(" ratio=")
+						.append(std::to_string(scale))
+						.append("\n");
 				/* remove space by ratio */
-				for (i = 0; i < number_of_columns - 1; i++) {
-					Area::size_type newcolsiz;
-					if (column_widths_in_out[i] > colcursizes[i]) {
+				for (i = 0; i < number_of_columns; i++) {
+					if (redux > 0 &&
+						column_widths_in_out[i] > colcursizes[i])
+					{
+						Area::size_type newcolsiz;
 						Area::size_type space     =
 							column_widths_in_out[i] - colcursizes[i];
-						newcolsiz = colcursizes[i] +
+						Area::size_type reduxspce =
 							(Area::size_type)ceil((double)(space) * scale);
-					} else {
-						newcolsiz = column_widths_in_out[i];
+						while (reduxspce > redux)
+							reduxspce--;
+						column_widths_in_out[i]  -= reduxspce;
+						redux                    -= reduxspce;
+						newtablesize             -= reduxspce;
+						wantedspace              -= column_widths_in_out[i];
 					}
-					wantedspace              -= newcolsiz;
-					column_widths_in_out[i]   = newcolsiz;
 				}
-				/* fit the remainder */
-				column_widths_in_out[i]  = wantedspace;
-				newtablesize             = wanted_size;
 			} else {
+				if (debug)
+					dbgstr.append("     remove all whitespace\n");
 				/* remove all extra space */
 				for (i = 0; i < number_of_columns; i++) {
 					if (colcursizes[i] < column_widths_in_out[i])
@@ -523,6 +541,10 @@ narrow_table(
 		if (newtablesize > wanted_size) {
 			Area::size_type redux = newtablesize - waste - wantedspace;
 
+			if (debug)
+				dbgstr.append("     trim columns, reduce=")
+					.append(std::to_string(redux))
+					.append("\n");
 			/* we know columns won't get smaller than their needsize, so
 			 * if we need more space than the absolute min could provide
 			 * us, shorten the next column in the same go */
@@ -597,6 +619,12 @@ widen_table
 		newwidth = (int)ceil(((double)column_widths_in_out[i]) * scale);
 		addwidth += newwidth - column_widths_in_out[i];
 		column_widths_in_out[i] = newwidth;
+	}
+
+	/* catch case of zero-width columns */
+	if (addwidth == 0) {
+		addwidth = wanted_size;
+		column_widths_in_out[0] = wanted_size;
 	}
 
 	*table_width_in_out += addwidth;

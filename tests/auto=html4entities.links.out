@@ -426,45 +426,45 @@ glyphs.
      character set. Names are ISO 10646 names.
 -->
 C0 Controls and Basic Latin
-quot   " quotation mark = APL quote                       U+0022 ISOnum
-amp    & ampersand                                        U+0026 ISOnum
-lt     < less-than sign                                   U+003C ISOnum
-gt     > greater-than sign                                U+003E ISOnum
+quot   " quotation mark = APL quote                         U+0022 ISOnum
+amp    & ampersand                                          U+0026 ISOnum
+lt     < less-than sign                                     U+003C ISOnum
+gt     > greater-than sign                                  U+003E ISOnum
 Latin Extended-A
-OElig  Œ latin capital ligature OE                        U+0152 ISOlat2
+OElig  Œ latin capital ligature OE                          U+0152 ISOlat2
          latin small ligature oe
-oelig  Œ ligature is a misnomer, this is a separate       U+0153 ISOlat2
+oelig  Œ ligature is a misnomer, this is a separate         U+0153 ISOlat2
          character in some languages
-Scaron š latin capital letter S with caron                U+0160 ISOlat2
-scaron š latin small letter s with caron                  U+0161 ISOlat2
-Yuml   Ÿ latin capital letter Y with diaeresis            U+0178 ISOlat2
+Scaron š latin capital letter S with caron                  U+0160 ISOlat2
+scaron š latin small letter s with caron                    U+0161 ISOlat2
+Yuml   Ÿ latin capital letter Y with diaeresis              U+0178 ISOlat2
 Spacing Modifier Letters
-circ   ^ modifier letter circumflex accent                U+02C6 ISOpub
-tilde  ˜ small tilde                                      U+02DC ISOdia
+circ   ^ modifier letter circumflex accent                  U+02C6 ISOpub
+tilde  ˜ small tilde                                        U+02DC ISOdia
 General Punctuation
-ensp     en space                                         U+2002 ISOpub
-emsp     em space                                         U+2003 ISOpub
-thinsp   thin space                                       U+2009 ISOpub
-zwnj     zero width non-joiner                            U+200C NEW RFC 2070
-zwj    ‍ zero width joiner                                U+200D NEW RFC 2070
-lrm    ‎ left-to-right mark                               U+200E NEW RFC 2070
-rlm    ‏ right-to-left mark                               U+200F NEW RFC 2070
-ndash  – en dash                                          U+2013 ISOpub
-mdash  — em dash                                          U+2014 ISOpub
-lsquo  ‘ left single quotation mark                       U+2018 ISOnum
-rsquo  ’ right single quotation mark                      U+2019 ISOnum
-sbquo  ‚ single low-9 quotation mark                      U+201A NEW
-ldquo  “ left double quotation mark                       U+201C ISOnum
-rdquo  ” right double quotation mark                      U+201D ISOnum
-bdquo  " double low-9 quotation mark                      U+201E NEW
-dagger † dagger                                           U+2020 ISOpub
-Dagger † double dagger                                    U+2021 ISOpub
-permil ‰ per mille sign                                   U+2030 ISOtech
-lsaquo ‹ single left-pointing angle quotation mark        U+2039 ISO proposed
+ensp     en space                                           U+2002 ISOpub
+emsp     em space                                           U+2003 ISOpub
+thinsp   thin space                                         U+2009 ISOpub
+zwnj     zero width non-joiner                              U+200C NEW RFC 2070
+zwj    ‍ zero width joiner                                  U+200D NEW RFC 2070
+lrm    ‎ left-to-right mark                                 U+200E NEW RFC 2070
+rlm    ‏ right-to-left mark                                 U+200F NEW RFC 2070
+ndash  – en dash                                            U+2013 ISOpub
+mdash  — em dash                                            U+2014 ISOpub
+lsquo  ‘ left single quotation mark                         U+2018 ISOnum
+rsquo  ’ right single quotation mark                        U+2019 ISOnum
+sbquo  ‚ single low-9 quotation mark                        U+201A NEW
+ldquo  “ left double quotation mark                         U+201C ISOnum
+rdquo  ” right double quotation mark                        U+201D ISOnum
+bdquo  " double low-9 quotation mark                        U+201E NEW
+dagger † dagger                                             U+2020 ISOpub
+Dagger † double dagger                                      U+2021 ISOpub
+permil ‰ per mille sign                                     U+2030 ISOtech
+lsaquo ‹ single left-pointing angle quotation mark          U+2039 ISO proposed
          lsaquo is proposed but not yet ISO standardized
-rsaquo › single right-pointing angle quotation mark       U+203A ISO proposed
+rsaquo › single right-pointing angle quotation mark         U+203A ISO proposed
          rsaquo is proposed but not yet ISO standardized
-euro   € euro sign                                        U+20AC NEW
+euro   € euro sign                                          U+20AC NEW
 
 
 ###### References ######
