@@ -427,6 +427,10 @@ narrow_table(
 	totcolneedsize = 0;
 	totcolcursize  = 0;
 	for (i = 0; i < number_of_columns; i++) {
+		/* correct case where cursize < needsize, this happens with
+		 * colspans */
+		if (colcursizes[i] < colneedsizes[i])
+			colcursizes[i] = colneedsizes[i];
 		totcolwidth    += column_widths_in_out[i];
 		totcolneedsize += colneedsizes[i];
 		totcolcursize  += colcursizes[i];
@@ -914,9 +918,9 @@ Table::format(Area::size_type w, int halign) const
 			y += row_heights  [j] + row_spacing;
 
 		/* Calculate cell dimensions. */
-		Area::size_type w = (lc.w - 1) * column_spacing;
+		Area::size_type cw = (std::max(lc.w, 1) - 1) * column_spacing;
 		for (int j = lc.x; j < lc.x + lc.w; j++)
-			w += column_widths[j];
+			cw += column_widths[j];
 
 		Area::size_type h = (lc.h - 1) * row_spacing;
 		for (int j = lc.y; j < lc.y + lc.h; j++)
@@ -928,7 +932,7 @@ Table::format(Area::size_type w, int halign) const
 			 * cell contents was rendered, so ensure we don't re-align
 			 * it, which basically makes centered content appear too
 			 * much to the right */
-			res->insert(*lc.area, x, y, w, h, Area::LEFT, lc.valign);
+			res->insert(*lc.area, x, y, cw, h, Area::LEFT, lc.valign);
 		}
 		if (draw_border) {
 			/* If the right neighbor cell bottom is flush with this
@@ -948,9 +952,9 @@ Table::format(Area::size_type w, int halign) const
 			}
 			res->add_attribute(Cell::UNDERLINE,
 							   x, y + h - 1,
-							   w + underline_column_separator, 1);
+							   cw + underline_column_separator, 1);
 		}
-		res->fill(draw_border ? '|' : ' ', x + w, y, 1, h);
+		res->fill(draw_border ? '|' : ' ', x + cw, y, 1, h);
 
 		/* apply colours */
 		Formatting::set_bgcolour(attributes.get(), res.get());
