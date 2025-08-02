@@ -1,4 +1,11 @@
-# 2.4.0 (unreleased master branch)
+# 2.5.0 (unreleased master branch)
+
+### New Features
+
+### Bugfixes
+
+
+# 2.4.0 (02-08-2025)
 
 ### New Features
 
