@@ -7,6 +7,8 @@
 
 ### Bugfixes
 
+* Fixed various rendering issues in tables.
+
 
 # 2.3.0 (06-06-2025)
 
