@@ -4,6 +4,9 @@
 
 ### Bugfixes
 
+* [Issue #59](https://github.com/grobian/html2text/issues/69)
+  Fix version reporting in -version and -help output.
+
 
 # 2.4.0 (02-08-2025)
 
