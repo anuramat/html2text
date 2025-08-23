@@ -18,6 +18,10 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
@@ -28,8 +32,6 @@
 #include "iconvstream.h"
 #include "format.h"
 
-#define stringify(x) stringify2(x)
-#define stringify2(x) #x
 
 static const char *usage = "\
 Usage:\n\
@@ -66,7 +68,7 @@ main(int argc, char **argv)
 {
 	if (argc == 2 && !strcmp(argv[1], "-help")) {
 		std::cout
-			<< "This is html2text, version " stringify(VERSION) << std::endl
+			<< "This is html2text, version " VERSION << std::endl
 			<< std::endl
 			<< usage;
 		exit(0);
@@ -74,7 +76,7 @@ main(int argc, char **argv)
 
 	if (argc == 2 && !strcmp(argv[1], "-version")) {
 		std::cout
-			<< "This is html2text, version " stringify(VERSION) << std::endl
+			<< "This is html2text, version " VERSION << std::endl
 			<< std::endl
 			<< "The latest version can be found at "
 			<< "https://gitlab.com/grobian/html2text" << std::endl
