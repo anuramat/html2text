@@ -222,8 +222,10 @@ main(int argc, char **argv)
 			ifs.open(rcfile);
 		if (rcfile == NULL || !ifs.rdbuf()->is_open())
 			ifs.open("/etc/html2textrc");
-		if (ifs.rdbuf()->is_open())
+		if (ifs.rdbuf()->is_open()) {
 			Formatting::loadProperties(ifs);
+			ifs.close();
+		}
 	}
 
 	iconvstream is;
@@ -274,9 +276,9 @@ main(int argc, char **argv)
 
 		if (driver.parse() != 0)
 			exit(1);
-
-		is.close();
 	}
+
+	is.close();
 
 	return 0;
 }

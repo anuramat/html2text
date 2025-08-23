@@ -4,8 +4,10 @@
 
 ### Bugfixes
 
-* [Issue #59](https://github.com/grobian/html2text/issues/69)
+* [Issue #69](https://gitlab.com/grobian/html2text/-/issues/69)
   Fix version reporting in -version and -help output.
+* [Issue #70](https://gitlab.com/grobian/html2text/-/issues/70)
+  Fix crash when reading multiple files.
 
 
 # 2.4.0 (02-08-2025)

@@ -129,6 +129,7 @@ iconvstream::close_is(void)
 {
 	if (is_open()) {
 		::close(fd_is);
+		fd_is = -1;
 		if (iconv_handle_is != nullptr)
 			iconv_close(iconv_handle_is);
 		delete[] readbuf;
@@ -177,6 +178,7 @@ iconvstream::close_os(void)
 	if (os_open()) {
 		*this << flush;
 		::close(fd_os);
+		fd_os = -1;
 		if (iconv_handle_os != nullptr)
 			iconv_close(iconv_handle_os);
 		delete[] writebuf;
