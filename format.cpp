@@ -1426,6 +1426,9 @@ format(
 	if (!elements)
 		return 0;
 
+	if (Formatting::is_hidden(attributes))
+		return 0;
+
 	list<auto_ptr<Element>>::const_iterator i;
 	for (i = elements->begin(); i != elements->end(); ++i) {
 		if (!(*i).get())
@@ -1820,6 +1823,13 @@ Formatting::is_hidden
 	istr clr = get_style_attr(attrs, "visibility", "", "").get()->front();
 	if (!clr.empty() &&
 		clr == "hidden")
+	{
+		return true;
+	}
+
+	clr = get_style_attr(attrs, "display", "", "").get()->front();
+	if (!clr.empty() &&
+		clr == "none")
 	{
 		return true;
 	}
