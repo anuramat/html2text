@@ -345,8 +345,11 @@ struct ListItem {
 };
 
 struct ListNormalItem : public ListItem {
+	ListNormalItem() : nowrap(false)
+	{}
 	auto_ptr<list<TagAttribute> >       attributes;// TYPE VALUE
 	auto_ptr<list<auto_ptr<Element> > > flow;
+	bool                                 nowrap;
 
 	/*virtual*/ Area *format(
 		Area::size_type w,

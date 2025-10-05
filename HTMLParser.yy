@@ -793,6 +793,7 @@ special:
         list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
         data->push_back(auto_ptr<Element>(d));
         lni->flow.reset(data);
+        lni->nowrap = true;
         drv.links->items->push_back(auto_ptr<ListItem>(lni));
         a->refnum = drv.links->items->size();
     }
@@ -827,6 +828,7 @@ special:
         data = new list<auto_ptr<Element>>;
         data->push_back(auto_ptr<Element>(d));
         lni->flow.reset(data);
+        lni->nowrap = true;
         drv.links->items->push_back(auto_ptr<ListItem>(lni));
         a->refnum = drv.links->items->size();
 

@@ -436,7 +436,18 @@ ListNormalItem::format(
 	if (w <= indent)
 		w = indent + 1;
 
-	auto_ptr<Area> res(::format(flow.get(), w - indent, Area::LEFT,
+	auto_ptr<Area> res;
+	if (nowrap) {
+		auto_ptr<Line> line(::line_format(flow.get(), attributes.get()));
+		if (line.get()) {
+			Area::size_type nowrap_width = line->length();
+			if (nowrap_width == 0)
+				nowrap_width = 1;
+			res.reset(make_up(*line, nowrap_width, Area::LEFT));
+		}
+	}
+	if (!res.get())
+		res.reset(::format(flow.get(), w - indent, Area::LEFT,
 								attributes.get()));
 	// KLUDGE: Some people write "<UL> <B><LI>Bla</B>Bla </UL>", which actually
 	// defines a bold and empty list item before "Bla Bla". This is very
