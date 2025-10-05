@@ -19,12 +19,14 @@
 HTMLDriver::HTMLDriver(HTMLControl& c,
 		iconvstream& os_,
 		bool& enable_links_,
+		bool use_osc8_,
 		int& width_,
 		int& mode_,
 		bool& debug_parser) :
 	enable_links(enable_links_),
 	control(c),
 	trace_parsing(debug_parser),
+	use_osc8(use_osc8_),
 	width(width_),
 	mode(mode_),
 	os(os_)
@@ -56,7 +58,9 @@ void HTMLDriver::process(const Document& document)
 {
 	switch (mode) {
 	case PRINT_AS_ASCII:
-		if (enable_links && links->items->size() > 0) {
+		Area::use_osc8 = use_osc8;
+		Area::clear_osc8_links();
+		if (enable_links && !use_osc8 && links->items->size() > 0) {
 			Heading *h = new Heading;
 			PCData *d = new PCData;
 			h->level = 6;

@@ -1196,14 +1196,20 @@ Anchor::line_format() const
 
 	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
+		unsigned int link_id = Area::use_osc8 ?
+			Area::register_osc8_link(std::string(href.c_str())) : 0;
+		if (link_id != 0) {
+			for (Line::size_type i = 0; i < res->length(); ++i)
+				(*res)[i].link_id = link_id;
+		}
 		res->add_attribute(get_link_cell_attributes(href));
 		res->set_fgcolour(Formatting::colour_from_string("blue"));
-		if (refnum > 0) {
+		if (refnum > 0 && !Area::use_osc8) {
 			char refnumstr[16];
-			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
-			res->append(refnumstr);
+							snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
+							res->append(refnumstr);
+			}
 		}
-	}
 
 	Formatting::set_bgcolour(attributes.get(), res.get());
 	Formatting::set_fgcolour(attributes.get(), res.get());
@@ -1220,13 +1226,22 @@ Anchor::format(Area::size_type w, int halign) const
 
 	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
+		unsigned int link_id = Area::use_osc8 ?
+			Area::register_osc8_link(std::string(href.c_str())) : 0;
 		res->add_attribute(get_link_cell_attributes(href));
 		res->set_fgcolour(Formatting::colour_from_string("blue"));
-		if (refnum > 0) {
+		if (link_id != 0) {
+			for (Area::size_type yy = 0; yy < res->height(); ++yy) {
+				Cell *row = (*res)[yy];
+				for (Area::size_type xx = 0; xx < res->width(); ++xx)
+					row[xx].link_id = link_id;
+			}
+		}
+		if (refnum > 0 && !Area::use_osc8) {
 			char refnumstr[16];
-			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
-			auto_ptr<Area> l(new Area(refnumstr));
-			*res += *l;
+				snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
+				auto_ptr<Area> l(new Area(refnumstr));
+				*res += *l;
 		}
 	}
 

@@ -785,7 +785,7 @@ special:
     $$ = a;
 
 	istr href = get_attribute(a->attributes.get(), "HREF", "");
-	if (drv.enable_links && !href.empty() && href[0] != '#') {
+		if (drv.enable_links && !drv.use_osc8 && !href.empty() && href[0] != '#') {
         ListNormalItem *lni = new ListNormalItem;
         PCData *d = new PCData;
         replace_sgml_entities(&href);
@@ -804,7 +804,7 @@ special:
 	istr src = get_attribute(attr.get(), "SRC", "");
 	istr alt = get_attribute(attr.get(), "ALT", "");
 	/* when ALT is empty, and we have SRC, replace it with a link */
-	if (drv.enable_links && !src.empty() && alt.empty()) {
+		if (drv.enable_links && !drv.use_osc8 && !src.empty() && alt.empty()) {
 		PCData *d = new PCData;
 		string nothing = "";
         d->text = nothing;

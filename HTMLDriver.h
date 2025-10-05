@@ -23,6 +23,7 @@ class HTMLDriver {
 		HTMLDriver(HTMLControl &c,
 				iconvstream& os_,
 				bool& enable_links_,
+				bool use_osc8_,
 				int& width_,
 				int& mode_,
 				bool& debug_parser);
@@ -35,6 +36,7 @@ class HTMLDriver {
 		bool read_cdata(const char *terminal, string *);
 		int list_nesting = 0;
 		bool enable_links;
+		bool use_osc8;
 		OrderedList *links = nullptr;
 
 		enum {

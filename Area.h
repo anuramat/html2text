@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include <string>
+#include <vector>
 #include "iconvstream.h"
 #include "istr.h"
 
@@ -45,6 +46,7 @@ struct Cell {
 	/* 8-bit colours */
 	unsigned char fgcolour;
 	unsigned char bgcolour;
+	unsigned int  link_id;
 
 	enum {
 		/* standard */
@@ -78,6 +80,7 @@ struct Cell {
 		attribute = NONE;
 		fgcolour  = 0;
 		bgcolour  = 0;
+		link_id   = 0;
 	}
 };
 
@@ -245,8 +248,12 @@ class Area {
 		/* see Area.cpp for the defaults for the below variables */
 		static bool            use_backspaces;
 		static bool            use_ansi;
+		static bool            use_osc8;
 		static Area::size_type widthsize;
 		static Area::size_type heightsize;
+		static unsigned int    register_osc8_link(const std::string &href);
+		static const std::string &osc8_link(unsigned int id);
+		static void            clear_osc8_links();
 
 	private:
 		Area(const Area &);
@@ -255,6 +262,7 @@ class Area {
 		size_type width_;
 		size_type height_;
 		Cell      **cells_;
+		static std::vector<std::string> osc8_targets;
 
 		friend iconvstream &operator<<(iconvstream&, const Area &);
 };

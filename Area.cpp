@@ -133,7 +133,12 @@ Line::insert(const char *p, size_type x)
 	enlarge(x + strlen(p));
 	Cell *q = cells_ + x;
 	while (*p)
-		q++->character = *p++;
+	{
+		q->character = *p++;
+		q->attribute = Cell::NONE;
+		q->link_id = 0;
+		q++;
+	}
 }
 
 void
@@ -149,6 +154,7 @@ Line::append(char c)
 	resize(x + 1);
 	cells_[x].character = c;
 	cells_[x].attribute = Cell::NONE;
+	cells_[x].link_id   = 0;
 }
 
 void
@@ -171,6 +177,7 @@ Line::append(const char *p)
 	for (; *p; ++p, ++q) {
 		q->character = *p;
 		q->attribute = Cell::NONE;
+		q->link_id   = 0;
 	}
 }
 
@@ -217,9 +224,35 @@ Line::add_attribute(char addition)
 
 bool Area::use_backspaces = false;
 bool Area::use_ansi       = true;
+bool Area::use_osc8       = false;
+std::vector<std::string> Area::osc8_targets;
 
 Area::size_type Area::widthsize  =  6;  /* px */
 Area::size_type Area::heightsize = 16;  /* px, default fontsize */
+
+unsigned int
+Area::register_osc8_link(const std::string &href)
+{
+	if (!use_osc8 || href.empty())
+		return 0;
+	osc8_targets.push_back(href);
+	return osc8_targets.size();
+}
+
+const std::string &
+Area::osc8_link(unsigned int id)
+{
+	static const std::string empty;
+	if (id == 0 || id > osc8_targets.size())
+		return empty;
+	return osc8_targets[id - 1];
+}
+
+void
+Area::clear_osc8_links()
+{
+	osc8_targets.clear();
+}
 
 Area::Area() :
 	width_(0),
@@ -242,6 +275,9 @@ Area::Area(
 		while (p != end) {
 			p->character = c;
 			p->attribute = a;
+			p->fgcolour = 0;
+			p->bgcolour = 0;
+			p->link_id = 0;
 			p++;
 		}
 	}
@@ -257,6 +293,9 @@ Area::Area(const char *p) :
 	while (q != end) {
 		q->character = *p++;
 		q->attribute = Cell::NONE;
+		q->fgcolour = 0;
+		q->bgcolour = 0;
+		q->link_id = 0;
 		q++;
 	}
 }
@@ -271,6 +310,9 @@ Area::Area(const string &s) :
 	for (string::size_type i = 0; i < s.length(); ++i) {
 		q->character = s[i];
 		q->attribute = Cell::NONE;
+		q->fgcolour = 0;
+		q->bgcolour = 0;
+		q->link_id = 0;
 		q++;
 	}
 }
@@ -294,6 +336,9 @@ Area::Area(const istr &s):
 	for (string::size_type i = 0; i < s.length(); ++i) {
 		q->character = s[i];
 		q->attribute = Cell::NONE;
+		q->fgcolour = 0;
+		q->bgcolour = 0;
+		q->link_id = 0;
 		q++;
 	}
 }
@@ -316,6 +361,9 @@ Area::operator>>=(size_type rs)
 			for (size_type x = 0; x < rs; x++) {
 				c[x].character = ' ';
 				c[x].attribute = Cell::NONE;
+				c[x].fgcolour  = 0;
+				c[x].bgcolour  = 0;
+				c[x].link_id   = 0;
 			}
 		}
 	}
@@ -337,6 +385,9 @@ Area::operator>>=(const char *prefix)
 			for (size_type x = 0; x < plen; x++) {
 				c[x].character = prefix[x];
 				c[x].attribute = Cell::NONE;
+				c[x].fgcolour  = 0;
+				c[x].bgcolour  = 0;
+				c[x].link_id   = 0;
 			}
 		}
 	}
@@ -457,6 +508,10 @@ Area::insert(char c, size_type x, size_type y)
 {
 	enlarge(x + 1, y + 1);
 	cells_[y][x].character = c;
+	cells_[y][x].attribute = Cell::NONE;
+	cells_[y][x].fgcolour  = 0;
+	cells_[y][x].bgcolour  = 0;
+	cells_[y][x].link_id   = 0;
 }
 
 void
@@ -467,6 +522,9 @@ Area::insert(const string &s, size_type x, size_type y)
 	for (string::size_type i = 0; i < s.length(); i++) {
 		cell->character = s[i];
 		cell->attribute = Cell::NONE;
+		cell->fgcolour  = 0;
+		cell->bgcolour  = 0;
+		cell->link_id   = 0;
 		cell++;
 	}
 }
@@ -501,7 +559,14 @@ Area::fill(char c, size_type x, size_type y, size_type w, size_type h)
 	for (size_type yy = y; yy < y + h; yy++) {
 		Cell *p = &cells_[yy][x];
 		for (size_type i = 0; i < w; i++)
-			p++->character = c;
+		{
+			p->character = c;
+			p->attribute = Cell::NONE;
+			p->fgcolour  = 0;
+			p->bgcolour  = 0;
+			p->link_id   = 0;
+			p++;
+		}
 	}
 }
 
@@ -594,10 +659,21 @@ operator<<(iconvstream& os, const Area &a)
 									 Cell::STRIKETHROUGH)) == 0)
 			end--;
 
+		unsigned int current_link = 0;
 		for (const Cell *p = cell; p != end; p++) {
 			int  c    = p->character;
 			char a    = p->attribute;
 			char u[5] = {0, 0, 0, 0, 0};
+			if (Area::use_osc8) {
+				unsigned int link = p->link_id;
+				if (link != current_link) {
+					if (current_link != 0)
+						os << "\e]8;;\e\\";
+					if (link != 0)
+						os << "\e]8;;" << Area::osc8_link(link) << "\e\\";
+					current_link = link;
+				}
+			}
 
 			/* compute codepoint, this is a bit unfortunate and should
 			 * go away once we use wchar_t */
@@ -686,6 +762,8 @@ operator<<(iconvstream& os, const Area &a)
 			}
 		}
 
+		if (Area::use_osc8 && current_link != 0)
+			os << "\e]8;;\e\\";
 		/* if we haven't yet, unset all features */
 		if (Area::use_ansi && attrs != Cell::NONE)
 			os << "\e[0;m";

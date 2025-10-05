@@ -102,6 +102,7 @@ main(int argc, char **argv)
 	bool use_ansi_escapes = true;
 	bool explicit_rendering_req = false;
 	bool enable_links = false;
+	bool use_osc8_links = false;
 	const char *from_encoding = NULL;
 	const char *to_encoding = NULL;
 	const char *widthstr = NULL;
@@ -121,6 +122,8 @@ main(int argc, char **argv)
 			extarg = &rcfile;
 		} else if (!strcmp(arg, "-links")) {
 			enable_links = true;
+		} else if (!strcmp(arg, "-osc8")) {
+			use_osc8_links = true;
 		} else if (!strcmp(arg, "-width")) {
 			extarg = &widthstr;
 		} else if (!strcmp(arg, "-o")) {
@@ -271,8 +274,8 @@ main(int argc, char **argv)
 		}
 
 		HTMLControl control(is, mode, debug_scanner, input_file);
-		HTMLDriver driver(control, is, enable_links,
-				width, mode, debug_parser);
+		HTMLDriver driver(control, is, enable_links, use_osc8_links,
+					width, mode, debug_parser);
 
 		if (driver.parse() != 0)
 			exit(1);
