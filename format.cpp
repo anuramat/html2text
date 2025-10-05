@@ -49,6 +49,8 @@ static void format(const list<auto_ptr<Element>> *elements,
 				   int                            halign,
 				   iconvstream                   &os);
 
+static bool formatting_ignore_colour = false;
+
 /*
  * Helper class that retrieves several block-formatting properties in one
  * go.
@@ -1203,7 +1205,8 @@ Anchor::line_format() const
 				(*res)[i].link_id = link_id;
 		}
 		res->add_attribute(get_link_cell_attributes(href));
-		res->set_fgcolour(Formatting::colour_from_string("blue"));
+		if (!formatting_ignore_colour)
+			res->set_fgcolour(Formatting::colour_from_string("blue"));
 		if (refnum > 0 && !Area::use_osc8) {
 			char refnumstr[16];
 							snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
@@ -1229,7 +1232,8 @@ Anchor::format(Area::size_type w, int halign) const
 		unsigned int link_id = Area::use_osc8 ?
 			Area::register_osc8_link(std::string(href.c_str())) : 0;
 		res->add_attribute(get_link_cell_attributes(href));
-		res->set_fgcolour(Formatting::colour_from_string("blue"));
+		if (!formatting_ignore_colour)
+			res->set_fgcolour(Formatting::colour_from_string("blue"));
 		if (link_id != 0) {
 			for (Area::size_type yy = 0; yy < res->height(); ++yy) {
 				Cell *row = (*res)[yy];
@@ -1570,6 +1574,12 @@ format(
 static Properties formatting_properties;
 
 /*static*/ void
+Formatting::set_ignore_colour(bool ignore)
+{
+	formatting_ignore_colour = ignore;
+}
+
+/*static*/ void
 Formatting::setProperty(const char *key, const char *value)
 {
 	formatting_properties.setProperty(key, value);
@@ -1870,6 +1880,8 @@ Formatting::set_fgcolour
 	Area                     *res
 )
 {
+	if (formatting_ignore_colour)
+		return;
 	/* width can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "color", "COLOR", "").get()->front();
 	if (!clr.empty()) {
@@ -1888,6 +1900,8 @@ Formatting::set_bgcolour
 	Area                     *res
 )
 {
+	if (formatting_ignore_colour)
+		return;
 	/* colour can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "background-color",
 							  "BGCOLOR", "").get()->front();
@@ -1907,6 +1921,8 @@ Formatting::set_fgcolour
 	Line                     *res
 )
 {
+	if (formatting_ignore_colour)
+		return;
 	/* colour can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "color", "COLOR", "").get()->front();
 	if (!clr.empty()) {
@@ -1925,6 +1941,8 @@ Formatting::set_bgcolour
 	Line                     *res
 )
 {
+	if (formatting_ignore_colour)
+		return;
 	/* width can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "background-color",
 							  "BGCOLOR", "").get()->front();

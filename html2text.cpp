@@ -53,6 +53,7 @@ text.\n\
   -nobs          Do not render boldface, underlining, colours, etc.\n\
   -bs            Render boldface and underlining using backspaces\n\
   -ansi          Render bold, underline and colours in output (default)\n\
+  -ignore-color  Ignore HTML foreground/background colours when rendering\n\
   -links         Generate reference list with link targets\n\
   -from_encoding Treat input encoded as given encoding\n\
   -to_encoding   Output using given encoding\n\
@@ -101,6 +102,7 @@ main(int argc, char **argv)
 	bool use_backspaces = false;
 	bool use_ansi_escapes = true;
 	bool explicit_rendering_req = false;
+	bool ignore_colour = false;
 	bool enable_links = false;
 	bool use_osc8_links = false;
 	const char *from_encoding = NULL;
@@ -140,6 +142,8 @@ main(int argc, char **argv)
 			use_backspaces = false;
 			use_ansi_escapes = true;
 			explicit_rendering_req = true;
+		} else if (!strcmp(arg, "-ignore-color")) {
+			ignore_colour = true;
 		} else if (!strcmp(arg, "-from_encoding")) {
 			extarg = &from_encoding;
 		} else if (!strcmp(arg, "-to_encoding")) {
@@ -255,6 +259,7 @@ main(int argc, char **argv)
 	 */
 	Area::use_backspaces = use_backspaces;
 	Area::use_ansi       = use_ansi_escapes;
+	Formatting::set_ignore_colour(ignore_colour);
 
 	for (i = 0; i < number_of_input_files; ++i) {
 		const char *input_file = input_files[i];

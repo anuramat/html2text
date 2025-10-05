@@ -39,6 +39,7 @@ static int             getInt(const char *key, int dflt);
 static vector<int>    *getIntVector(const char *key, const char *dflt);
 static char            getAttributes(const char *key, char dflt);
 static int             colour_from_string(const char *clrc);
+static void            set_ignore_colour(bool ignore);
 static Area::size_type get_width(const list<TagAttribute> *, Area::size_type w);
 static bool            is_hidden(const list<TagAttribute> *);
 static void            set_fgcolour(const list<TagAttribute> *, Area *);
